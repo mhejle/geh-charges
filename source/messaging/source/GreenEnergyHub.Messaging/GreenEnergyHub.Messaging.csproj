@@ -16,16 +16,17 @@ limitations under the License.
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
         <Nullable>enable</Nullable>
         <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
         <RunAnalyzersDuringBuild>true</RunAnalyzersDuringBuild>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <RootNamespace>GreenEnergyHub.Messaging</RootNamespace>
+        <LangVersion>9</LangVersion>
+        <TargetFramework>net5.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="9.5.1" />
+        <PackageReference Include="FluentValidation" Version="9.5.3" />
         <PackageReference Include="MediatR" Version="9.0.0" />
         <PackageReference Include="NodaTime" Version="3.0.5" />
     </ItemGroup>
