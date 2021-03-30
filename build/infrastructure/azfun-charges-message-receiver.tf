@@ -35,6 +35,7 @@ module "azfun_message_receiver" {
     module.azfun_message_receiver_plan.dependent_on,
     module.azfun_message_receiver_stor.dependent_on,
     module.sbtar_local_events_sender.dependent_on,
+    module.sbt_local_events.dependent_on,
   ]
 }
 

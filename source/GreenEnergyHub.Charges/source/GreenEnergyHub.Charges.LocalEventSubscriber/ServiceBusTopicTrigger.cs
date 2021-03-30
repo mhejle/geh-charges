@@ -29,11 +29,8 @@ namespace GreenEnergyHub.Charges.LocalEventSubscriber
 
         [Function(FunctionName)]
         public static Task RunAsync(
-            [ServiceBusTrigger("CHARGES_SERVICE_BUS_RECEIVER_TRANSACTION_QUEUE_NAME", Connection = "CHARGES_SERVICE_BUS_CONNECTION_STRING")]
+            [ServiceBusTrigger("LOCAL_EVENTS_TOPIC_NAME", Connection = "LOCAL_EVENTS_LISTENER_CONNECTION_STRING")]
             string jsonSerializedQueueItem,
-            //int deliveryCount,
-            //DateTime enqueuedTimeUtc,
-            //string messageId,
             [NotNull] FunctionContext executionContext)
         {
             var logger = executionContext.GetLogger(FunctionName);
