@@ -35,26 +35,23 @@ module "sbtar_local_events_sender" {
   topic_name                = module.sbt_local_events.name
 }
 
-resource "azurerm_servicebus_subscription" "sbs-local-events-charge-transaction-received-subscription" {
-  name                = "sbs-local-events-charge-transaction-received-subscription"
+resource "azurerm_servicebus_subscription" "sbs-charge-transaction-received-subscription" {
+  name                = "sbs-charge-transaction-received-subscription"
   resource_group_name = data.azurerm_resource_group.main.name
   namespace_name      = module.sbn_charges.name
   topic_name          = module.sbt_local_events.name
   max_delivery_count  = 1
-  dependencies        = [module.sbn_charges, module.sbt_local_events]
 }
 
-resource "azurerm_servicebus_subscription_rule" "sbs-local-events-charge-transaction-filter" {
-  name                = "sbsr-local-events-charge-transaction-filter"
+resource "azurerm_servicebus_subscription_rule" "sbs-charge-transaction-received-filter" {
+  name                = "sbsr-charge-transaction-received-filter"
   resource_group_name = data.azurerm_resource_group.main.name
   namespace_name      = module.sbn_charges.name
   topic_name          = module.sbt_local_events.name
-  subscription_name   = azurerm_servicebus_subscription.sbs-local-events-charge-transaction-received-subscription.name
-  dependencies        = [module.sbn_charges, module.sbt_local_events]
+  subscription_name   = azurerm_servicebus_subscription.sbs-charge-transaction-received-subscription.name
   filter_type         = "CorrelationFilter"
 
   correlation_filter {
-    subject = "ChargeTransactionReceived"
-    }
+      label = "ChargeTransactionReceived"
   }
 }
