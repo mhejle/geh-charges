@@ -1,14 +1,14 @@
 # [short title of solved problem and solution]
 
 * Status: proposed
-* Deciders: @bemwen, @bjarkemeier, @Mech0z, @lasrinnil, @prtandrup
+* Deciders: `@bemwen, @bjarkemeier, @Mech0z, @lasrinnil, @prtandrup`
 * Date: 2021-03-30
 
-Technical Story: [ADO-119260](https://dev.azure.com/energinet/Datahub/_workitems/edit/119260)
+Technical Story: ADO-119260
 
 ## Context and Problem Statement
 
-This ADR address how we want to handle events in the charge domain, which we have identified to be highly event-driven domain.
+This address how we want to handle events in the charge domain, which we have identified to be highly event-driven domain.
 
 ## Decision Drivers
 
@@ -18,8 +18,8 @@ This ADR address how we want to handle events in the charge domain, which we hav
 
 ## Considered Options
 
-* Option 1 - Passing DTOs though EventHub's (like previously)
-* Option 2 - Event sourcing, by use of Service Bus rentention
+* Option 1 - Passing `DTO's` though `EventHub's` (like previously)
+* Option 2 - Event sourcing, by use of Service Bus retention
 * __Option 3 - Preparing for event sourcing, saving events in external storage (for example table storage)__
 
 ## Decision Outcome
@@ -73,9 +73,9 @@ Charge domain event guidelines used:
 
 ## Pros and Cons of the Options <!-- optional -->
 
-### Option 1 - Passing DTOs though EventHub's (like previously)
+### Option 1 - Passing `DTO's` though `EventHub's` (like previously)
 
-In this options, we use EventHub to pass DTO's or events between components or services.
+In this options, we use `EventHub` to pass `DTO's` or events between components or services.
 
 * Good: It is a simple design
 * Good: It is what we have been doing up until now, so we have the knowledge
@@ -88,9 +88,9 @@ In this options, we use EventHub to pass DTO's or events between components or s
 * Bad: Model changes require potentially more complex migrations of data
 * Consequence: Data is owned by whichever model we use, for example in the SQL server
 
-### Option 2 - Event sourcing, by use of Service Bus rentention
+### Option 2 - Event sourcing, by use of Service Bus retention
 
-In this option, we aim to use Event Sourcing. This means that we let the events determine the state of our system. 
+In this option, we aim to use Event Sourcing. This means that we let the events determine the state of our system.
 In addition, we aim to save the events in the Service Bus itself.
 
 * Good: Promotes low coupling
@@ -101,12 +101,12 @@ In addition, we aim to save the events in the Service Bus itself.
 * Good: Refactoring can be less of an issue as you can rebuild your model based on existing events
 * Good: Topics allow multiple subscribers to listen to any type of event
 * Good: Saving the events in the Service Bus means we do not have to build a new place to store them
-* Bad: Saving the events in the Service Bus means rentention will be an issue; you need earlier events to build your state from scratch so care will need to be taken in determining when an event is no longer needed.
+* Bad: Saving the events in the Service Bus means retention will be an issue; you need earlier events to build your state from scratch so care will need to be taken in determining when an event is no longer needed.
 * Bad: We do not have an out of the box way of replaying older events as subscribers will only get events from the time they subscribe and onward
 * Bad: With only events, you cannot easily see the current state of your application; a query model is needed to make it perform
 * Bad: It takes more boiler plating
 * Bad: Data will be replicated (both event and query model are needed, so the cost is higher than option 1)
 * Bad: You are stuck with your events; It will be a log of all your bad design decisions
 * Bad: It is another way to work; you have to think differently
-* Bad: We rely alot on Service Bus; we are more tied to it
+* Bad: We rely a lot on Service Bus; we are more tied to it
 * Consequence: Data is owned by events; query models (like SQL server data) can be wiped and rebuild with a new model
