@@ -29,7 +29,7 @@ namespace GreenEnergyHub.Charges.LocalEventSubscriber
 
         [Function(FunctionName)]
         public static Task RunAsync(
-            [ServiceBusTrigger("LOCAL_EVENTS_TOPIC_NAME", Connection = "LOCAL_EVENTS_LISTENER_CONNECTION_STRING")]
+            [ServiceBusTrigger("LOCAL_EVENTS_TOPIC_NAME", "LOCAL_EVENTS_SUBSCRIPTION_NAME", Connection = "LOCAL_EVENTS_LISTENER_CONNECTION_STRING")]
             string jsonSerializedQueueItem,
             [NotNull] FunctionContext executionContext)
         {
