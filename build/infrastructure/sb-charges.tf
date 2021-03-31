@@ -34,3 +34,17 @@ module "sbtar_local_events_sender" {
   dependencies              = [module.sbn_charges]
   topic_name                = module.sbt_local_events.name
 }
+
+resource "azurerm_servicebus_subscription_rule" "sbtar-local-events-sender-filter" {
+  name                = "sbtar-local-events-sender-filter"
+  resource_group_name = data.azurerm_resource_group.main.name
+  namespace_name      = azurerm_servicebus_namespace.example.name
+  topic_name          = azurerm_servicebus_topic.example.name
+  subscription_name   = azurerm_servicebus_subscription.example.name
+  filter_type         = "CorrelationFilter"
+
+  correlation_filter {
+    subject = "ChargeTransactionReceived"
+    }
+  }
+}
