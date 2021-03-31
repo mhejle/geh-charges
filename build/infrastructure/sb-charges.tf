@@ -35,12 +35,22 @@ module "sbtar_local_events_sender" {
   topic_name                = module.sbt_local_events.name
 }
 
-resource "azurerm_servicebus_subscription_rule" "sbtar-local-events-sender-filter" {
-  name                = "sbtar-local-events-sender-filter"
+resource "azurerm_servicebus_subscription" "sbs-local-events-charge-transaction-received-subscription" {
+  name                = "sbs-local-events-charge-transaction-received-subscription"
   resource_group_name = data.azurerm_resource_group.main.name
-  namespace_name      = azurerm_servicebus_namespace.example.name
-  topic_name          = azurerm_servicebus_topic.example.name
-  subscription_name   = azurerm_servicebus_subscription.example.name
+  namespace_name      = module.sbn_charges.name
+  topic_name          = module.sbt_local_events.name
+  max_delivery_count  = 1
+  dependencies        = [module.sbn_charges, module.sbt_local_events]
+}
+
+resource "azurerm_servicebus_subscription_rule" "sbs-local-events-charge-transaction-filter" {
+  name                = "sbsr-local-events-charge-transaction-filter"
+  resource_group_name = data.azurerm_resource_group.main.name
+  namespace_name      = module.sbn_charges.name
+  topic_name          = module.sbt_local_events.name
+  subscription_name   = azurerm_servicebus_subscription.sbs-local-events-charge-transaction-received-subscription.name
+  dependencies        = [module.sbn_charges, module.sbt_local_events]
   filter_type         = "CorrelationFilter"
 
   correlation_filter {
