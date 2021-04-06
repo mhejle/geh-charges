@@ -17,7 +17,6 @@ using System.Threading.Tasks;
 using GreenEnergyHub.Charges.Domain.ChangeOfCharges.Transaction;
 using GreenEnergyHub.Json;
 using Microsoft.Azure.Functions.Worker;
-using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -29,7 +28,7 @@ namespace GreenEnergyHub.Charges.LocalEventSubscriber
 
         [Function(FunctionName)]
         public static Task RunAsync(
-            [ServiceBusTrigger("LOCAL_EVENTS_TOPIC_NAME", "LOCAL_EVENTS_SUBSCRIPTION_NAME", Connection = "LOCAL_EVENTS_LISTENER_CONNECTION_STRING")]
+            [ServiceBusTrigger("sbt_local_events", "sbs-charge-transaction-received-subscription", Connection = "LOCAL_EVENTS_LISTENER_CONNECTION_STRING")]
             string jsonSerializedQueueItem,
             [NotNull] FunctionContext executionContext)
         {
