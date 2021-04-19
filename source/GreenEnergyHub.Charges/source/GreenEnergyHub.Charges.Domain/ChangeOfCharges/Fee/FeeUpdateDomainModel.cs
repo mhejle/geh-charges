@@ -13,12 +13,13 @@
 // limitations under the License.
 
 using System.Text.Json.Serialization;
+using GreenEnergyHub.Charges.Domain.ChangeOfCharges.Transaction;
+using GreenEnergyHub.Charges.Domain.Common;
 using NodaTime;
-using MarketDocument = GreenEnergyHub.Charges.Domain.Common.MarketDocument;
 
-namespace GreenEnergyHub.Charges.Domain.ChangeOfCharges.Transaction
+namespace GreenEnergyHub.Charges.Domain.ChangeOfCharges.Fee
 {
-    public class ChangeOfChargesTransaction
+    public class FeeUpdateDomainModel
     {
         public MarketDocument? MarketDocument { get; set; }
 
@@ -44,5 +45,7 @@ namespace GreenEnergyHub.Charges.Domain.ChangeOfCharges.Transaction
         public string? LastUpdatedBy { get; set; }
 
         public string? MRid { get; set; }
+
+        public 
     }
 }

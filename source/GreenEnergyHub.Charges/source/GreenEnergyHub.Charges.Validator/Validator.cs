@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using GreenEnergyHub.Charges.Application;
@@ -20,6 +21,7 @@ using GreenEnergyHub.Charges.Domain.ChangeOfCharges.Fee;
 using GreenEnergyHub.Charges.Domain.ChangeOfCharges.Tariff;
 using GreenEnergyHub.Charges.Domain.ChangeOfCharges.Transaction;
 using GreenEnergyHub.Json;
+using GreenEnergyHub.Queues.ValidationReportDispatcher.Validation;
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
 
@@ -53,9 +55,11 @@ namespace GreenEnergyHub.Charges.LocalMessageServiceBusTopicTrigger
         {
             var serviceBusMessage = _jsonDeserializer.Deserialize<ServiceBusMessageWrapper>(jsonSerializedQueueItem);
             var transaction = serviceBusMessage.Transaction;
-            var result = await _changeOfChargeTransactionInputValidator.ValidateAsync(transaction).ConfigureAwait(false);
+            var inputValidationResult = await _changeOfChargeTransactionInputValidator.ValidateAsync(transaction).ConfigureAwait(false);
+            var handler = GetHandler(transaction);
+            var handlerResult = await handler.HandleAsync(transaction).ConfigureAwait(false);
 
-            if (!result.Errors.Any())
+            if (!inputValidationResult.Errors.Any() && !handlerResult.Errors.Any())
             {
                 await _changeOfChargesTransactionHandler.HandleAsync(GetCommandFromChangeOfChargeTransactionValidationSucceeded(transaction)).ConfigureAwait(false);
             }
@@ -65,6 +69,26 @@ namespace GreenEnergyHub.Charges.LocalMessageServiceBusTopicTrigger
             }
 
             log.LogDebug("Received event with charge type mRID '{mRID}'", transaction.ChargeTypeMRid);
+        }
+
+        private static IPriceElementHandler GetHandler(ChangeOfChargesTransaction transaction)
+        {
+            if (transaction.GetType() == typeof(FeeCreate))
+            {
+                return new FeeCreateHandler();
+            }
+
+            if (transaction.GetType() == typeof(FeeUpdate))
+            {
+                return new FeeCreateHandler();
+            }
+
+            if (transaction.GetType() == typeof(TariffCreate))
+            {
+                return new TariffCreateHandler();
+            }
+
+            throw new ArgumentOutOfRangeException(nameof(transaction));
         }
 
         private static ChangeOfChargesTransaction GetCommandFromChangeOfChargeTransactionValidationSucceeded(ChangeOfChargesTransaction transaction)

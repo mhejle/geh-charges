@@ -23,6 +23,14 @@ namespace GreenEnergyHub.Charges.Application.ChangeOfCharges.Repositories
     public interface IChargeRepository
     {
         /// <summary>
+        /// Used to find single a single Charge in the database
+        /// </summary>
+        /// <param name="mrid">The unique mrid known to external partners</param>
+        /// <param name="chargeTypeOwnerMRid">Owner of the document</param>
+        /// <returns>Returns a mapped version of the found database object, if not found it returns null<see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
+        Task<ChangeOfChargesTransaction?> GetChargeAsync(string mrid, string chargeTypeOwnerMRid);
+
+        /// <summary>
         /// Stores the given <see cref="ChangeOfChargesTransaction"/> in persistent storage.
         /// </summary>
         /// <param name="transaction">The transaction to be persisted.</param>
